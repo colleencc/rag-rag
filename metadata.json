@@ -1,0 +1,6 @@
+{
+  "name": "TradingView Markets",
+  "description": "Comprehensive market tracking platform inspired by TradingView Markets featuring real-time quotes, interactive candlestick SuperCharts with technical indicators, market heatmaps, stock & crypto screeners, watchlists, economic calendar, and financial news.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
