@@ -48,6 +48,9 @@ export const Header: React.FC<HeaderProps> = ({
             <span className="text-xs font-semibold px-1.5 py-0.5 rounded bg-[#2962ff]/20 text-[#2962ff] border border-[#2962ff]/30">
               Markets
             </span>
+            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/30">
+              PRO
+            </span>
           </span>
         </button>
       </div>

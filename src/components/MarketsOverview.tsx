@@ -63,6 +63,37 @@ export const MarketsOverview: React.FC<MarketsOverviewProps> = ({
 
   return (
     <div className="flex flex-col gap-6 p-4 md:p-6 max-w-7xl mx-auto w-full">
+      {/* Pro Market Breadth Strip */}
+      <div className="bg-[#1e222d] border border-[#2a2e39] rounded-lg p-3 flex flex-wrap items-center justify-between gap-3 text-xs">
+        <div className="flex items-center gap-6">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-[#089981] animate-pulse"></span>
+            <span className="font-bold text-white">US Market Pulse:</span>
+            <span className="font-semibold text-[#089981]">Bullish Momentum</span>
+          </div>
+
+          <div className="hidden md:flex items-center gap-2 text-[#787b86]">
+            <span>Breadth:</span>
+            <span className="font-mono text-[#089981] font-semibold">18 Adv</span>
+            <span>/</span>
+            <span className="font-mono text-[#f23645] font-semibold">6 Dec</span>
+          </div>
+
+          <div className="hidden lg:flex items-center gap-2 text-[#787b86]">
+            <span>CBOE Volatility (VIX):</span>
+            <span className="font-mono text-emerald-400 font-semibold">14.18 (-1.42%)</span>
+          </div>
+        </div>
+
+        <button
+          onClick={() => onSelectSymbol('NVDA')}
+          className="flex items-center gap-1.5 px-3 py-1 bg-[#2962ff] hover:bg-[#1e53e5] text-white font-semibold rounded text-xs transition-colors cursor-pointer"
+        >
+          <BarChart2 className="w-3.5 h-3.5" />
+          <span>Launch SuperChart PRO</span>
+        </button>
+      </div>
+
       {/* 1. Global Major Indices Strip */}
       <section>
         <div className="flex items-center justify-between mb-3">

@@ -262,6 +262,7 @@ export default function App() {
       {isSuperChartModalOpen && (
         <SuperChartModal
           asset={activeAssetQuote}
+          allAssets={assets}
           onClose={() => setIsSuperChartModalOpen(false)}
           onTrade={handleTrade}
         />

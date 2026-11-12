@@ -1025,27 +1025,98 @@ export const MARKET_NEWS: MarketNews[] = [
   }
 ];
 
+export type ProTimeframe = '1m' | '5m' | '15m' | '1h' | '4h' | '1D' | '1W' | '1M';
+
+export interface OrderBookLevel {
+  price: number;
+  size: number;
+  total: number;
+}
+
+export interface OrderBook {
+  bids: OrderBookLevel[];
+  asks: OrderBookLevel[];
+  spread: number;
+}
+
+// Generate realistic Level 2 Order Book Depth
+export function generateOrderBook(midPrice: number): OrderBook {
+  const bids: OrderBookLevel[] = [];
+  const asks: OrderBookLevel[] = [];
+  const tick = midPrice > 1000 ? 1 : midPrice > 100 ? 0.05 : 0.01;
+
+  let totalBid = 0;
+  for (let i = 1; i <= 8; i++) {
+    const price = parseFloat((midPrice - i * tick).toFixed(2));
+    const size = parseFloat((Math.random() * 45 + 5).toFixed(1));
+    totalBid += size;
+    bids.push({ price, size, total: parseFloat(totalBid.toFixed(1)) });
+  }
+
+  let totalAsk = 0;
+  for (let i = 1; i <= 8; i++) {
+    const price = parseFloat((midPrice + i * tick).toFixed(2));
+    const size = parseFloat((Math.random() * 45 + 5).toFixed(1));
+    totalAsk += size;
+    asks.push({ price, size, total: parseFloat(totalAsk.toFixed(1)) });
+  }
+
+  return {
+    bids,
+    asks: asks.reverse(),
+    spread: parseFloat((asks[0]?.price - bids[0]?.price || tick).toFixed(2))
+  };
+}
+
 // Helper to generate realistic candlestick data for any asset and timeframe
-export function generateCandles(basePrice: number, timeframe: '1D' | '5D' | '1M' | '3M' | '1Y' | '5Y' | 'ALL', count = 70): Candle[] {
+export function generateCandles(basePrice: number, timeframe: ProTimeframe | string = '1D', count = 75): Candle[] {
   const candles: Candle[] = [];
   const now = Date.now();
   
-  let intervalMs = 15 * 60 * 1000; // 15 min for 1D
-  if (timeframe === '5D') intervalMs = 60 * 60 * 1000; // 1 hr
-  if (timeframe === '1M') intervalMs = 24 * 60 * 60 * 1000; // 1 day
-  if (timeframe === '3M') intervalMs = 24 * 60 * 60 * 1000; // 1 day
-  if (timeframe === '1Y') intervalMs = 3 * 24 * 60 * 60 * 1000; // 3 days
-  if (timeframe === '5Y' || timeframe === 'ALL') intervalMs = 7 * 24 * 60 * 60 * 1000; // 1 week
+  let intervalMs = 15 * 60 * 1000;
+  let isIntraday = true;
 
-  let currentPrice = basePrice * (1 - (Math.random() * 0.15 - 0.05));
-  const volatility = basePrice * 0.012;
+  switch (timeframe) {
+    case '1m':
+      intervalMs = 60 * 1000;
+      break;
+    case '5m':
+      intervalMs = 5 * 60 * 1000;
+      break;
+    case '15m':
+      intervalMs = 15 * 60 * 1000;
+      break;
+    case '1h':
+      intervalMs = 60 * 60 * 1000;
+      break;
+    case '4h':
+      intervalMs = 4 * 60 * 60 * 1000;
+      break;
+    case '1D':
+      intervalMs = 24 * 60 * 60 * 1000;
+      isIntraday = false;
+      break;
+    case '1W':
+      intervalMs = 7 * 24 * 60 * 60 * 1000;
+      isIntraday = false;
+      break;
+    case '1M':
+      intervalMs = 30 * 24 * 60 * 60 * 1000;
+      isIntraday = false;
+      break;
+    default:
+      intervalMs = 60 * 60 * 1000;
+  }
+
+  let currentPrice = basePrice * (1 - (Math.random() * 0.12 - 0.04));
+  const volatility = basePrice * (isIntraday ? 0.005 : 0.015);
 
   for (let i = count; i >= 0; i--) {
     const timeTimestamp = now - i * intervalMs;
     const dateObj = new Date(timeTimestamp);
     
     let timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    if (timeframe !== '1D' && timeframe !== '5D') {
+    if (!isIntraday) {
       timeStr = dateObj.toLocaleDateString([], { month: 'short', day: 'numeric' });
     }
 
